@@ -16,20 +16,14 @@ use Illuminate\Support\Facades\Auth;
 class StudentAssessmentController extends Controller
 {
 
-    public function msg(){
-        return [
-            'success' => session('success'),
-            'danger' => session('danger'),
-            'warning' => session('warning')
-        ];
-    }
 
     private function getAssessementNote($assessment){
         return AssessmentNote::query()
         ->where('assessment_id', $assessment->id)
         ->where('student_id', Auth::id())
         ->where('course_id', $assessment->course_id)
-        ->first();
+        ->get()[0];
+
     }
 
     public function index(Request $request){
@@ -64,7 +58,7 @@ class StudentAssessmentController extends Controller
             ->pluck('assessment_id');
         // dd($completedId);
 
-        $msg = $this->msg();
+        $msg = self::msg();
 
         $fillieres = FilliereResource::collection(
             $user->fillieres()

@@ -15,30 +15,14 @@ abstract class Controller
         $notif['content'] = $content;
         Notification::create($notif);
     }
-    public function search($query, Request $request){
 
-        
+    public static function msg(){
 
-        // $query = User::query();
+        return [
+            'success' => session('success'),
+            'warning' => session('warning'),
+            'danger' => session('danger'),
+        ];
 
-        // // Applique le filtre de recherche si nécessaire
-        // if($search = $request['search']){
-        //     $query->where(function($query) use ($search){
-        //         $query->where('name', 'LIKE', "%{$search}%")
-        //             ->orWhere('email', 'LIKE', "%{$search}%")
-        //             ->orWhere('address', 'LIKE', "%{$search}%");
-        //     });
-        // }
-
-        // if ($sortBy = $request['sortBy']) {
-        //     $query->orderBy($sortBy);
-        // }
-
-        // // Applique le filtre de type d'utilisateur si spécifié
-        // if ($display = $request['display']) {
-        //     $query->where('role', $display);
-        // }
-
-        // return $query;
     }
 }

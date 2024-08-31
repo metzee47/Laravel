@@ -16,19 +16,8 @@ use Illuminate\Support\Facades\Auth;
 class StudentController extends Controller
 {
 
-
-    public static function msg(){
-
-        return [
-            'success' => session('success'),
-            'warning' => session('warning'),
-            'danger' => session('danger'),
-        ];
-
-    }
     
     public function home(){
-
 
         $msg = self::msg();
         $notifications = NotificationResource::collection(

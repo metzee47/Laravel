@@ -18,13 +18,6 @@ use Illuminate\Support\Facades\Auth;
 
 class InstructorCourseController extends Controller
 {
-    public function msg(){
-        return [
-            'success' => session('success'),
-            'danger' => session('danger'),
-            'warning' => session('warning')
-        ];
-    }
     
     public function index(Request $request){
 
@@ -44,7 +37,7 @@ class InstructorCourseController extends Controller
         // $courses = CourseResource::collection($query->with('lessons')->get());
         // dd($fillieres);
         $params = $request->query() ?: ['' => ''];
-        $msg = $this->msg();
+        $msg = self::msg();
 
         return inertia('Users/Instructor/Course/Index', compact('fillieres', 'params', 'msg'));
     }

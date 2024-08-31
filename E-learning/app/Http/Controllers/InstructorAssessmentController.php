@@ -22,26 +22,34 @@ class InstructorAssessmentController extends Controller
             }
         }
 
-        return inertia('Users/Instructor/Assessment/Index', compact('assessments'));
+        $msg = self::msg();
+
+        return inertia('Users/Instructor/Assessment/Index', compact('assessments', 'msg'));
     }
     public function correction($assessment, $student){
 
-        // $user = $request->user();
-        // dd($assessment);
         $assessment = AssessmentNoteResource::collection(
             AssessmentNote::query()
-                ->with('course', 'assessment', 'student')
-                ->where('assessment_id', $assessment)    
-                ->where('student_id', $student)          
-                ->get()             
+            ->with('course', 'assessment', 'student')
+            ->where('assessment_id', $assessment)    
+            ->where('student_id', $student)          
+            ->get()       
         );
+        // dd($assessment);
+        $assessment = $assessment[0];
+        if ($assessment->status === 'in_progress') {
+            $msg = 'Devoir pas encore soumis par l\'élève: Il n\'a pas encore acces à l\'épreuve';
+            return back()->with('warning', $msg);
+        }
+        // $user = $request->user();
+        // dd($assessment);
+
         
 
-        $assessment = $assessment[0];
+        // $assessment = $assessment;
         // dd($assessment->assessment);
         $assessment->assessment->content = json_decode($assessment->assessment->content);
 
-        
         return inertia('Users/Instructor/Assessment/Correction', compact('assessment'));
     }
 

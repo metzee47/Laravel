@@ -1,9 +1,10 @@
+import PopUp from "@/Components/PopUp";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Body from "@/Layouts/Body";
 import { Head, router } from "@inertiajs/react";
 import { useEffect } from "react";
 
-export default function Index({auth, assessments}){
+export default function Index({auth, assessments, msg}){
     assessments = assessments[0].data
 
     return (
@@ -14,6 +15,10 @@ export default function Index({auth, assessments}){
             <Head title={`Instructors | Devoirs soumis`}  />
             <Body>
                 {/* <pre>{JSON.stringify(assessments, undefined, 2)}</pre> */}
+
+                {
+                    msg?.warning && <PopUp msg = {msg?.warning} className = {'bg-yellow-400'}/>
+                }
 
 
                 <div className="mb-5">
@@ -42,7 +47,6 @@ const AssessmentCard = ({assessments, action = 'corriger'}) =>{
         const id = assessment.assessment.id
         const student = assessment.student.id
         // console.log(id, student);
-        
         
         router.get(route('instructor.assessment.correction', [id, student]))
     }
