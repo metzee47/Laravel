@@ -29,7 +29,7 @@ class StudentAssessmentController extends Controller
         ->where('assessment_id', $assessment->id)
         ->where('student_id', Auth::id())
         ->where('course_id', $assessment->course_id)
-        ->get();
+        ->first();
     }
 
     public function index(Request $request){
@@ -93,12 +93,12 @@ class StudentAssessmentController extends Controller
 
         // dd($assessmentNote[0]->status);
 
-        if($assessmentNote[0]->status === 'missed'){
+        if($assessmentNote->status === 'missed'){
             $msg = 'Vous avez raté le devoir sur ' . $assessment->title;
             return redirect(route('student.assessment.index'))->with('warning', $msg);
         }
 
-        else if($assessmentNote[0]->status === 'completed' && $assessmentNote[0]->sent_time){
+        else if($assessmentNote->status === 'completed' && $assessmentNote->sent_time){
             $msg = 'Vous avez déjà complété le devoir sur ' . $assessment->title;
             return redirect(route('student.assessment.index'))->with('warning', $msg);
         }
@@ -109,6 +109,7 @@ class StudentAssessmentController extends Controller
 
     public function store_assessment(Request $request, Assessment $assessment){
         $this->save_assessment($request, $assessment, 'store');
+
         return inertia('Users/Student/Assessment/Todo', compact('assessment'));
        
     }
@@ -116,7 +117,7 @@ class StudentAssessmentController extends Controller
     public function submit_assessment(Request $request, Assessment $assessment){
         $this->save_assessment($request, $assessment, 'submit');
         
-        return redirect(route('student.assessment.index'));
+        return redirect(route('student.assessment.index'))->with('success', 'Devoir soummis avec succes!');
        
     }
     public function missed_assessment(Request $request){
@@ -128,13 +129,21 @@ class StudentAssessmentController extends Controller
         $data['status'] = 'missed';
         $data['student_id'] = $request->user()->id;
         foreach ($data['missed'] as $d) {
-            $data['assessment_id'] = $d['id'];
+            $data['assessment_id'] = $d['assessment_id'];
             $data['course_id'] = $d['course_id'];
             $data['content'] = json_encode($d['content']); 
             // dd($data);  
             AssessmentNote::create($data);
 
         }
+        $assessment = Assessment::findOrFail($data['assessment_id']);
+
+        $object = 'Devoir Manqué' ;
+        $content =  Auth::user()->name . ' a raté son devoir('. $assessment->name . ')';
+
+        $instructor = Course::findOrFail($data['course_id'])->professeur();
+
+        $this->notification(Auth::id(), $instructor, $object, $content);
         $msg = 'Vous avez raté un nouveau devoir';
 
         return redirect(route('student.assessment.index'))->with('warning', $msg);
@@ -155,13 +164,26 @@ class StudentAssessmentController extends Controller
         $status === 'submit' && $data['sent_time'] = new DateTime();
         unset($data['id']);
 
+        //mis a jour des notes devoir pour l'eleve 
         AssessmentNote::query()
             ->where('assessment_id', $data['assessment_id'])
             ->where('student_id', $data['student_id'])
             ->where('course_id', $data['course_id'])
             ->update($data);
 
-        // $instructor = Course::findOrFail($data['course_id'])->professeur()
+        // notification pour le professeur
+        $object = $status === 'submit' ? 
+            'Soumission Devoir':
+            'Début Devoir' ;
+        $content = $status === 'submit' ? 
+            Auth::user()->name . ' a soummis son devoir('. $assessment->name . ')' :
+            Auth::user()->name . ' vient de commencer le devoir sur ' . $assessment->name;
+
+        $instructor = Course::findOrFail($data['course_id'])->professeur();
+
+        $this->notification(Auth::id(), $instructor, $object, $content);
+        
+
         
     }
 
