@@ -11,7 +11,12 @@ export default function Correction({auth, assessment}){
 
     assessment = assessment.data
 
-    const content = assessment.assessment.content;  
+    let content = assessment.content;  
+    if (assessment.status === 'missed') {
+        content = JSON.parse(content[0])
+        // console.log('mo');
+        
+    }
 
     const {data, setData, post, errors} = useForm({
         assessment_id: assessment.assessment.id,
@@ -38,7 +43,7 @@ export default function Correction({auth, assessment}){
 
 
             <Body>
-                {/* <pre>{JSON.stringify(assessment, undefined, 2)}</pre> */}
+                {/* <pre>{JSON.stringify(content, undefined, 2)}</pre> */}
 
                 <div className="flex justify-between items-center gap-4">
                     <h3 className="shadow-inner shadow-cyan-600 px-3 py-2 w-fit mb-2 italic rounded-md font-bold">Correction du devoir de {assessment.student.name}</h3>

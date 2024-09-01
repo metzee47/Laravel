@@ -9,11 +9,20 @@ import { useEffect, useState } from "react";
 export default function Todo({auth, assessment}){
 
     const [content, setContent] = useState(assessment.content[0])
-    const {data, setData, post, errors} = useForm({})
+    const {data, setData, post, errors} = useForm({
+        assessment_id: assessment.id,
+        course_id: assessment.course_id,
+        student_id: auth.user.id,
+        content: assessment.content
+    })
 
     const submitAssessment = () =>{
         post(route('student.assessment.submit-assessment', assessment))
     }
+
+    useEffect(()=>{        
+        post(route('student.assessment.store-assessment', assessment))    
+    },[])
 
     return (
         <AuthenticatedLayout

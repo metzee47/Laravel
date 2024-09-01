@@ -46,7 +46,7 @@ export default function Dashboard({ auth, msg, notifications, totalUsers, authUs
     },[checkbox])
 
     const markAsRead = () => {
-        post(route('dashboard.delete-notif'))
+        post(route('delete-notif'))
     }
     
     

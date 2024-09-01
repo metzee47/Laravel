@@ -15,13 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class MessageController extends Controller
 {
 
-    public function msg(){
-        return [
-            'success' => session('success'),
-            'danger' => session('danger'),
-            'warning' => session('warning')
-        ];
-    } 
+    
     /**
      * Display a listing of the resource.
      */
@@ -42,7 +36,7 @@ class MessageController extends Controller
                 $query->where('status', $display);
         }
 
-        $msg = $this->msg();
+        $msg = self::msg();
 
         $messages = MessageResource::collection($query->orderBy('created_at', 'desc')->paginate(15));
         $params = $request->query() ?: ['' => ''];

@@ -93,7 +93,7 @@ function RenderAssessment({content, setData = function(){}, id, course, duration
         
         setData(
             {
-                id: id,
+                assessment_id: id,
                 course_id: course,
                 content: [
                     {

@@ -25,10 +25,10 @@ export default function Index({auth, inProgressAssessment, missedAssessment, com
             post(route('student.assessment.missed-assessment'))                  
         }       
     },[data.missed])
-    useEffect(()=>{
-        console.log(data);
+    // useEffect(()=>{
+    //     console.log(data);
         
-    },[data])
+    // },[data])
 
     useEffect(()=>{
         
@@ -121,9 +121,7 @@ export default function Index({auth, inProgressAssessment, missedAssessment, com
         if(status === 'en cours'){
             // setToDo(toDo.filter(assessment=> assessment.id !== assessmen.id))            
             router.get(route('student.assessment.do-assessment', assessmen))  
-            setTimeout(() => {
-                post(route('student.assessment.store-assessment', assessmen))    
-            }, 4000);
+            // post(route('student.assessment.store-assessment', assessmen))    
             
         }
         
@@ -144,7 +142,7 @@ export default function Index({auth, inProgressAssessment, missedAssessment, com
             <Head title={`Assessment | All`}/>
 
             <Body>
-                {/* <pre>{JSON.stringify(toDo, undefined, 2)}</pre> */}
+                {/* <pre>{JSON.stringify(completedAssessment, undefined, 2)}</pre> */}
 
                 {
                     warning && 
@@ -178,7 +176,7 @@ export default function Index({auth, inProgressAssessment, missedAssessment, com
                         completed.map(item =>
                             // const status = daysLeft(item.item_date, item.limit_date)
                             <div key={item.assessment.id} className="my-2 w-full md:w-1/2">
-                                <AssessmentCard assessment={item.assessment}/>
+                                <AssessmentCard assessment={item.assessment} note={item.note}/>
                             </div>
                         )                                               
                     }
@@ -205,6 +203,8 @@ export default function Index({auth, inProgressAssessment, missedAssessment, com
 
 const AssessmentCard = ({status = '', assessment, note}) =>{
     // console.log(assessment);
+    // console.log(assessment);
+    
     
     return(
         <div className="py-2 px-4 text-sm rounded-md shadow shadow-orange-950 bg-gray-900 italic">

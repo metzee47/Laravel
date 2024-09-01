@@ -20,6 +20,7 @@ class AssessmentNoteResource extends JsonResource
             'assessment' => new AssessmentResource($this->whenLoaded('assessment')),
             'course' => new CourseResource($this->whenLoaded('course')),
             'note' => $this->note,
+            'content' => $this->content,
             'status' => $this->status,
             'sent_time' => (new Carbon($this->sent_time))->format('Y-m-d à H:s')
         ];

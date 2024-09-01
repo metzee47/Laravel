@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AssessmentNoteResource;
+use App\Models\Assessment;
 use App\Models\AssessmentNote;
 use App\Models\Course;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class InstructorAssessmentController extends Controller
 {
@@ -48,8 +51,8 @@ class InstructorAssessmentController extends Controller
 
         // $assessment = $assessment;
         // dd($assessment->assessment);
-        $assessment->assessment->content = json_decode($assessment->assessment->content);
-
+        $assessment->content = json_decode($assessment->content);
+// dd($assessment->content);
         return inertia('Users/Instructor/Assessment/Correction', compact('assessment'));
     }
 
@@ -63,14 +66,25 @@ class InstructorAssessmentController extends Controller
         ]);
 
         $assessmentNote = AssessmentNote::query()
-        ->where('assessment_id', $data['assessment_id'])
-        ->where('course_id', $data['course_id'])
-        ->where('student_id', $data['student_id']);
-        // ->get();
+            ->where('assessment_id', $data['assessment_id'])
+            ->where('course_id', $data['course_id'])
+            ->where('student_id', $data['student_id']);
 
-        $data['sent_time'] = $assessmentNote->sent_time;
-        
+        // $data['sent_time'] = $assessmentNote[0]->sent_time;
+        // dd($data);
+
+        // dd($assessmentNote->update());
         $assessmentNote->update($data);
+
+        //alerte notification etudiant
+        $assessment = Assessment::find($data['assessment_id']);
+        $object = 'Correction devoir' ;
+        $content =  'Votre note du devoir '.$assessment->title. ' est disponible.';
+
+        // $instructor = Course::findOrFail($data['course_id'])->professeur();
+
+        $this->notification(Auth::id(), $data['student_id'], $object, $content);
+        
         return redirect(route('instructor.assessment.index'));
     }
 }

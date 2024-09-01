@@ -23,4 +23,8 @@ class InstructorController extends Controller
         return inertia('Users/Instructor/Home', compact('msg', 'notifications'));
 
     }
+
+    public function delete_notif(Request $request){
+        $this->delete_notif($request);
+    }
 }

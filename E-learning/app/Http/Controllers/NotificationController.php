@@ -65,9 +65,11 @@ class NotificationController extends Controller
     }
 
     public function delete_notif(Request $request){
+        // $this->delete_notif($request);
         $data = $request->input();
+        // dd($data);
         foreach ($data as $notif) {
-            Notification::findOrFail($notif)->delete();
+            Notification::find($notif)->delete();
         }
         return back();
     }

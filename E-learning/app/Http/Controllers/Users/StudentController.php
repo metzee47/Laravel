@@ -29,4 +29,8 @@ class StudentController extends Controller
         return inertia('Users/Student/Home', compact('msg', 'notifications'));
 
     }
+
+    public function delete_notif(Request $request){
+        $this->delete_notif($request);
+    }
 }

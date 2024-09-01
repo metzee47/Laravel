@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-       
+        Schema::table('assessment_notes', function (Blueprint $table) {
+            
+            $table->json('content')->nullable();
+            
+        });
     }
 
     /**
@@ -19,6 +23,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('assessment_notes', function (Blueprint $table) {
+            
+            $table->dropColumn('content');
+            
+            
+        });
     }
 };

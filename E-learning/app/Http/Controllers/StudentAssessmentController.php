@@ -9,6 +9,7 @@ use App\Models\Assessment;
 use App\Models\AssessmentNote;
 use App\Models\Course;
 use App\Models\Notification;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,7 @@ class StudentAssessmentController extends Controller
     }
 
     public function do_assessment(Assessment $assessment){
+        
 
         $assessment->content = json_decode($assessment->content);
 
@@ -102,9 +104,10 @@ class StudentAssessmentController extends Controller
     }
 
     public function store_assessment(Request $request, Assessment $assessment){
+        // dd($assessment);
         $this->save_assessment($request, $assessment, 'store');
 
-        return inertia('Users/Student/Assessment/Todo', compact('assessment'));
+        // return inertia('Users/Student/Assessment/Todo', compact('assessment'));
        
     }
 
@@ -120,24 +123,32 @@ class StudentAssessmentController extends Controller
             'completed' => 'nullable|array'
         ]);
 
-        $data['status'] = 'missed';
-        $data['student_id'] = $request->user()->id;
+        $assessmentNote['status'] = 'missed';
+        $assessmentNote['student_id'] = Auth::id();
         foreach ($data['missed'] as $d) {
-            $data['assessment_id'] = $d['assessment_id'];
-            $data['course_id'] = $d['course_id'];
-            $data['content'] = json_encode($d['content']); 
+            $assessmentNote['assessment_id'] = $d['assessment_id'];
+            $assessmentNote['course_id'] = $d['course_id'];
+            $assessmentNote['content'] = json_encode($d['content']); 
+
+            AssessmentNote::query()
+                ->where('assessment_id', $assessmentNote['assessment_id'])
+                ->where('student_id', $assessmentNote['student_id'])
+                ->where('course_id', $assessmentNote['course_id'])
+                ->update($assessmentNote);
             // dd($data);  
-            AssessmentNote::create($data);
+            // AssessmentNote::update($data);
+
+            $assessment = Assessment::findOrFail($assessmentNote['assessment_id']);
+    
+            $object = 'Devoir Manqué' ;
+            $content =  Auth::user()->name . ' a raté son devoir('. $assessment->title . ')';
+    
+            $instructor = Course::findOrFail($data['course_id'])->professeur()->first();
+    
+            $this->notification(Auth::id(), $instructor->id, $object, $content);
 
         }
-        $assessment = Assessment::findOrFail($data['assessment_id']);
 
-        $object = 'Devoir Manqué' ;
-        $content =  Auth::user()->name . ' a raté son devoir('. $assessment->name . ')';
-
-        $instructor = Course::findOrFail($data['course_id'])->professeur();
-
-        $this->notification(Auth::id(), $instructor, $object, $content);
         $msg = 'Vous avez raté un nouveau devoir';
 
         return redirect(route('student.assessment.index'))->with('warning', $msg);
@@ -151,14 +162,15 @@ class StudentAssessmentController extends Controller
             'course_id' => 'required|integer|exists:courses,id',
         ]);
 
-        $data['status'] = $status;
-        $data['student_id'] = $request->user()->id;
+        $data['status'] = 'completed';
+        $data['student_id'] = Auth::id();
         // $data['assessment_id'] = $assessment->id;
         $data['content'] = json_encode($data['content']);
-        $status === 'submit' && $data['sent_time'] = new DateTime();
-        unset($data['id']);
+        $status === 'submit' && $data['sent_time'] = date('Y-m-d H:i:s');
 
-        //mis a jour des notes devoir pour l'eleve 
+        // dd($data);
+
+        // mis a jour des notes devoir pour l'eleve 
         AssessmentNote::query()
             ->where('assessment_id', $data['assessment_id'])
             ->where('student_id', $data['student_id'])
@@ -170,12 +182,14 @@ class StudentAssessmentController extends Controller
             'Soumission Devoir':
             'Début Devoir' ;
         $content = $status === 'submit' ? 
-            Auth::user()->name . ' a soummis son devoir('. $assessment->name . ')' :
-            Auth::user()->name . ' vient de commencer le devoir sur ' . $assessment->name;
+            Auth::user()->name . ' a soummis son devoir('. $assessment->title . ')' :
+            Auth::user()->name . ' vient de commencer le devoir sur ' . $assessment->title;
 
-        $instructor = Course::findOrFail($data['course_id'])->professeur();
+        $instructor = Course::findOrFail($data['course_id'])->professeur()->first();
 
-        $this->notification(Auth::id(), $instructor, $object, $content);
+        // dd($instructor->id);
+
+        $this->notification(Auth::id(), $instructor->id, $object, $content);
         
 
         

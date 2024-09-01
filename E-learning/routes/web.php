@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FilliereController;
 use App\Http\Controllers\InstructorAssessmentController;
@@ -21,11 +22,12 @@ use Inertia\Inertia;
 Route::redirect('/', 'login');
 // Route::get('/learner', fn()=> Inertia::render('Users/Student/Home'))->name('homestudent');
 // Route::get('/', fn()=> Inertia::render('Users/Instructor/Home'))->name('homeinstructor');
+Route::post('/mark-as-read', [NotificationController::class, 'delete_notif'])->middleware('auth')->name('delete-notif');
 
 Route::prefix('/dashbord')->middleware(['auth', 'verified', 'admin'])->name('dashboard')->group(function () {
     
     Route::get('/', [NotificationController::class, 'dashbord']);
-    Route::post('/mark-as-read', [NotificationController::class, 'delete_notif'])->name('.delete-notif');
+    // Route::post('/mark-as-read', [NotificationController::class, 'delete_notif'])->name('.delete-notif');
     Route::resource('course', CourseController::class);
     Route::resource('filliere', FilliereController::class);
     Route::resource('user', UserController::class);
@@ -35,6 +37,8 @@ Route::prefix('/dashbord')->middleware(['auth', 'verified', 'admin'])->name('das
 Route::prefix('/learner')->middleware(['auth', 'learner'])->name('student.')->group(function () {
     
     Route::get('/', [StudentController::class, 'home'])->name('home');
+    // Route::post('/mark-as-read', [NotificationController::class, 'delete_notif'])->name('delete-notif');
+
     // student message route group
     Route::prefix('/message')->name('message.')->controller(StudentMessageController::class)->group(function(){
         Route::get('/', 'index')->name('index');
@@ -65,10 +69,10 @@ Route::prefix('/learner')->middleware(['auth', 'learner'])->name('student.')->gr
         Route::get('/a-faire/{assessment}', 'do_assessment')
                     ->where(['assessment' => '[0-9]+'])
                     ->name('do-assessment');
-        Route::post('/a-faire/{assessment}', 'store_assessment')
+        Route::post('/en-cours/{assessment}', 'store_assessment')
                     ->where(['assessment' => '[0-9]+'])
                     ->name('store-assessment');
-        Route::post('/a-faire/{assessment}', 'submit_assessment')
+        Route::post('/soumission/{assessment}', 'submit_assessment')
                     ->where(['assessment' => '[0-9]+'])
                     ->name('submit-assessment');
         Route::post('/devoir-raté', 'missed_assessment')
@@ -86,6 +90,8 @@ Route::prefix('/learner')->middleware(['auth', 'learner'])->name('student.')->gr
 Route::prefix('/teacher')->middleware(['auth', 'teacher'])->name('instructor.')->group(function () {
     
     Route::get('/', [InstructorController::class, 'home'])->name('home');
+    // Route::post('/mark-as-read', [NotificationController::class, 'delete_notif'])->name('delete-notif');
+
     // instructor message route group
     Route::prefix('/message')->name('message.')->controller(InstructorMessageController::class)->group(function(){
         Route::get('/', 'index')->name('index');

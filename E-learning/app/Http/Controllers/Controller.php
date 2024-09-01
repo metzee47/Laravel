@@ -25,4 +25,13 @@ abstract class Controller
         ];
 
     }
+
+    public function delete_notif(Request $request){
+        $data = $request->input();
+        dd($data);
+        foreach ($data as $notif) {
+            Notification::find($notif)->delete();
+        }
+        return back();
+    }
 }

@@ -39,7 +39,7 @@ export default function Home({auth, msg, notifications}){
     },[checkbox])
 
     const markAsRead = () => {
-        post(route('dashboard.delete-notif'))
+        post(route('delete-notif'))
     }
     return (
         <AuthenticatedLayout

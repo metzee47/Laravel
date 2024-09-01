@@ -14,14 +14,6 @@ use Illuminate\Support\Facades\Auth;
 
 class StudentMessageController extends Controller
 {
-
-    public function msg(){
-        return [
-            'success' => session('success'),
-            'danger' => session('danger'),
-            'warning' => session('warning')
-        ];
-    }
     
     public function index(Request $request){
 
@@ -59,7 +51,7 @@ class StudentMessageController extends Controller
                     // dd($user);
         $messages = MessageResource::collection($query->orderBy('created_at', 'desc')->get());
         $params = $request->query() ?: ['' => ''];
-        $msg = $this->msg();
+        $msg = self::msg();
 
         return inertia('Users/Student/Message/Index', compact('messages', 'params', 'msg', 'user'));
     }

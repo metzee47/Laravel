@@ -19,17 +19,9 @@ class UserController extends Controller
      * Display a listing of the resource.
      */
 
-    public function msg(){
-        return [
-            'success' => session('success'),
-            'danger' => session('danger'),
-            'warning' => session('warning')
-        ];
-    } 
-
     public function index(Request $request)
     {
-        $msg = $this->msg();
+        $msg = self::msg();
         $query = User::query();
 
         // Applique le filtre de recherche si nécessaire

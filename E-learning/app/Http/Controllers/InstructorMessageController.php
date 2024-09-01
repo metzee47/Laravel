@@ -21,13 +21,7 @@ class InstructorMessageController extends Controller
 
 {
 
-    public function msg(){
-        return [
-            'success' => session('success'),
-            'danger' => session('danger'),
-            'warning' => session('warning')
-        ];
-    }
+    
     
     public function index(Request $request){
 
@@ -65,7 +59,7 @@ class InstructorMessageController extends Controller
                     // dd($user);
         $messages = MessageResource::collection($query->orderBy('created_at', 'desc')->get());
         $params = $request->query() ?: ['' => ''];
-        $msg = $this->msg();
+        $msg = self::msg();
 
         return inertia('Users/Instructor/Message/Index', compact('messages', 'params', 'msg', 'user'));
     }
