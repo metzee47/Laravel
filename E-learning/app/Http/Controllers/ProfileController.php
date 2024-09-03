@@ -51,7 +51,18 @@ class ProfileController extends Controller
         else
         $data['profil_image'] = $user->profil_image;
     // dd($data);
-        User::find($user->id)->update($data);
+    User::find($user->id)->update($data);
+    
+    $object = 'Modification Utisateur' ;
+    $content =  'A fait quelques modifications sur ses informations personnelles.';
+    
+    // $instructor = Course::findOrFail($data['course_id'])->professeur();
+    $admin = User::query()->where('role', 'admin')->get();
+    // dd($admin);
+        foreach ($admin as $user) {
+            $this->notification(Auth::id(),$user->id, $object, $content);
+        }
+
 
         return Redirect::route('profile.edit');
     }
@@ -65,6 +76,16 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
+        $object = 'Suppression Utisateur' ;
+        $content =  'A supprimé son compte.';
+
+        // $instructor = Course::findOrFail($data['course_id'])->professeur();
+        $admin = User::query()->where('role', 'admin')->get();
+        foreach ($admin as $user) {
+            $this->notification(Auth::id(),$user->id, $object, $content);
+            dd($user);
+        }
+
         $user = $request->user();
 
         Auth::logout();
@@ -73,6 +94,8 @@ class ProfileController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        
 
         return Redirect::to('/');
     }

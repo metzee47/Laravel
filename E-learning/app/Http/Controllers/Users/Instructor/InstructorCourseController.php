@@ -60,6 +60,22 @@ class InstructorCourseController extends Controller
         $data['content'] = json_encode($data['content']);
         $data['course_id'] = $course->id;
         Lesson::create($data);
+
+        //avertissement de nouvelle notification
+        $object = 'Nouvelle leçon';
+        $content = 'La leçon ' . $data['title'] . ' est disponible pour le cours ' . $course->name;
+
+        //admin
+        $admin = User::query()->where('role', 'admin')->get();
+        foreach ($admin as $user) {
+            $this->notification(Auth::id(), $user->id, $object, $content);
+        }
+        //etudiant
+        $related_students = Course::findOrFail($course->id)->fillieres()->first()->users()->where('role', 'etudiant')->get();
+        foreach ($related_students as $student) {
+            $this->notification(Auth::id(),$student->id, $object, $content);
+
+        }
         $msg = 'Nouvelle leçon générée(' . $data['title'] . ') pour le cours ' . $course->name;
         // dd($data);
         return redirect(route('instructor.course.index'))->with('success', $msg);
@@ -120,7 +136,7 @@ class InstructorCourseController extends Controller
             AssessmentNote::create($assessmentNote);
 
             //avertissement de nouvelle notification a l'etudiant
-            $this->notification(Auth::id(),$user->id, $object, $content);
+            $this->notification(Auth::id(),$student->id, $object, $content);
 
             // dd($assessmentNote);
         }

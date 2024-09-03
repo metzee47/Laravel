@@ -12,7 +12,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
         email: user.email,
-        profil_image: user.profil_image,
+        profil_image: null,
         address: user.address
     });
 

@@ -40,10 +40,11 @@ class NotificationController extends Controller
         // dd($totalUnread);
         $notifications = NotificationResource::collection(
             Notification::query()
-                ->orderBy('created_at', 'desc')
-                ->where('to', Auth::id())
-                ->get()
+            ->where('to', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get()
         );
+
         
         return Inertia::render('Dashboard', compact(
             'msg', 
