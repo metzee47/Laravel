@@ -11,6 +11,7 @@ use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
 {
@@ -65,6 +66,13 @@ class MessageController extends Controller
     {
         $data = $request->validated();
         $data['sent_by'] = Auth::user()->id;
+
+        // dd($data);
+
+        //notification
+        $object = 'Message' ;
+        $content =  'Vous avez recu un nouveau message.';
+    
         switch($data['destinataires']){
             case "fillieres":
                 // dd($data['sent_to']);
@@ -72,28 +80,44 @@ class MessageController extends Controller
                 foreach ($data['sent_to'] as $filliere) {
                     $filliere_users = Filliere::find($filliere)->users()->get();
                     foreach ($filliere_users as $user) {
+                        $data['file'] = $this->store_file($data);
                         $data['sent_to'] = $user->id;
                         Message::create($data);
+
+
                         // dd($data);
                     }
                 }
+                break;
             case "etudiants":
                 // dd($data);
 
                 foreach ($data['sent_to'] as $etudiant) {
                     $data['sent_to'] = $etudiant;
+                    $data['file'] = $this->store_file($data);
                     Message::create($data);
+                    $this->notification(Auth::id(),$etudiant, $object, $content);
+
                     // dd($data);
                 }
+
+                break;
 
             case "professeurs":
                 // dd($data);
                 
                 foreach ($data['sent_to'] as $professeur) {
+                    $data['file'] = $this->store_file($data);
+                    // dd($data['file']);
                     $data['sent_to'] = $professeur;
                     Message::create($data);
+                    $this->notification(Auth::id(),$professeur, $object, $content);
+
                     // dd($data);
                 }
+                break;
+            
+                
         }
         $msg = 'Message envoye avec succes.';
 
@@ -109,6 +133,18 @@ class MessageController extends Controller
         $message = new MessageResource($message);
         return inertia('Dashbord/Message/Show', compact('message'));
     }
+    public function download(Message $message)
+    {
+        $filePath = 'public/' . $message->file;
+        $fileName = str_replace('message_files/' , '' , $message->file);
+        // dd($fileName);
+        if(Storage::exists($filePath)){
+            Storage::download($filePath, $fileName);
+        };
+
+        return route('dashboardmessage.download-file', $message);
+        // return inertia('Dashbord/Message/Show', compact('message'));
+    }
     
 
     /**
@@ -120,4 +156,6 @@ class MessageController extends Controller
         $msg = 'Supression du message ' . $message->id . '.';
         return to_route('dashboardmessage.index')->with('danger', $msg);
     }
+
+    
 }

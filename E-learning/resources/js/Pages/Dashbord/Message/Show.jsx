@@ -22,11 +22,11 @@ export default function Show({auth, message}){
                     <div className="flex gap-4">
                         <Link
                             href={route('dashboardmessage.index')}
-                            className="bg-sky-600 px-2 py-1 rounded-sm font-bold text-gray-800 hover:-translate-x-2 duration-200">Retour
+                            className="bg-sky-600 px-2 py-1 rounded-sm text-gray-800 hover:-translate-x-2 duration-200">Retour
                         </Link>
                         <Link
                             onClick={e => handleDelete(e, message)}
-                            className="bg-red-600 px-2 py-1 rounded-sm font-bold text-slate-300 hover:translate-x-2 duration-200">Supprimer
+                            className="bg-red-500 px-2 py-1 rounded-sm text-gray-800 hover:translate-x-2 duration-200">Supprimer
                         </Link>
                     </div>
                 </div>

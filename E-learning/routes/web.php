@@ -32,6 +32,10 @@ Route::prefix('/dashbord')->middleware(['auth', 'verified', 'admin'])->name('das
     Route::resource('filliere', FilliereController::class);
     Route::resource('user', UserController::class);
     Route::resource('message', MessageController::class)->except(['edit', 'update']);
+    Route::get('/message/download-file/{message}', [MessageController::class, 'download'])
+        ->where(['message' => '[a-z0-9/-]+'])
+        ->name('message.download-file');
+
 
 });
 Route::prefix('/learner')->middleware(['auth', 'learner'])->name('student.')->group(function () {

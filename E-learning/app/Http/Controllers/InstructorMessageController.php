@@ -83,11 +83,20 @@ class InstructorMessageController extends Controller
 
         $data['sent_by'] = Auth::id();
         $msg = '';
+
+        //notification
+        $object = 'Message' ;
+        $content =  'Vous avez recu un nouveau message.';
+
         if($data['destinataires'] == 'admin'){
             $admin = User::query()->where('role', 'admin')->get();
             foreach ($admin as $user) {
                 $data['sent_to'] = $user->id;
+                $data['file'] = $this->store_file($data);
+
                 Message::create($data);
+                $this->notification(Auth::id(),$user->id, $object, $content);
+
             }
             $msg = 'Message envoyé à Admin';
 
@@ -97,7 +106,11 @@ class InstructorMessageController extends Controller
             // $admin = User::query()->where('role', 'admin')->get();
             foreach ($data['sent_to'] as $etudiant) {
                 $data['sent_to'] = $etudiant;
+                $data['file'] = $this->store_file($data);
+
                 Message::create($data);
+                $this->notification(Auth::id(),$etudiant, $object, $content);
+
 
                 $etudiant = User::find($etudiant);
                 // dd($etudiant);
@@ -111,6 +124,7 @@ class InstructorMessageController extends Controller
                 foreach ($filliere_users as $user) {
                     if ($user->role != 'professeur') {
                         $data['sent_to'] = $user->id;
+                        $data['file'] = $this->store_file($data);
                         Message::create($data);
                     }
                     // dd($data);

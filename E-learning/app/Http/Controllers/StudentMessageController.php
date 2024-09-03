@@ -74,11 +74,17 @@ class StudentMessageController extends Controller
 
         $data['sent_by'] = Auth::id();
         $msg = '';
+
+        //notification
+        $object = 'Message' ;
+        $content =  'Vous avez recu un nouveau message.';
         if($data['destinataires'] == 'admin'){
             $admin = User::query()->where('role', 'admin')->get();
             foreach ($admin as $user) {
                 $data['sent_to'] = $user->id;
+                $data['file'] = $this->store_file($data);
                 Message::create($data);
+                $this->notification(Auth::id(),$user->id, $object, $content);
                 $msg = 'Message envoyé à Admin';
             }
         }
@@ -87,10 +93,13 @@ class StudentMessageController extends Controller
             // $admin = User::query()->where('role', 'admin')->get();
             foreach ($data['sent_to'] as $professeur) {
                 $data['sent_to'] = $professeur;
-                Message::create($data);
+                $data['file'] = $this->store_file($data);
 
+                Message::create($data);
                 $professeur = User::find($professeur);
                 // dd($professeur);
+                $this->notification(Auth::id(),$professeur->id, $object, $content);
+
                 $msg = 'Message envoyé au professeur ' . $professeur->name;
             }
         }

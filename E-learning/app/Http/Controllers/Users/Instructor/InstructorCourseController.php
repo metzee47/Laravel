@@ -108,8 +108,8 @@ class InstructorCourseController extends Controller
             'title' => 'required|string|min:4',
             'order' => 'required|integer',
             'duration' => 'required|in:_1h,_1h30,_2h,_2h30,_3h',
-            'assessment_date' => 'required|date|after:tomorrow',
-            'limit_date' => 'required|date|after:assessment_date',
+            'assessment_date' => 'required|date',
+            'limit_date' => 'required|date|',
             'content' => 'array',
         ]);
         $data['content'] = json_encode($data['content']);

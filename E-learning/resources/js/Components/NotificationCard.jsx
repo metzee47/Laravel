@@ -27,7 +27,7 @@ const NotificationCard = ({notifications, checkbox, setCheckbox, setData}) =>{
                             <td className="px-2 py-3 text-wrap">{notification.object}</td>
                             <td className="px-2 py-3 text-wrap">{notification.content}</td>
                             <td className="px-2 py-3 text-wrap">{notification.created_at}</td>
-                            <td className="px-2 py-3 text-wrap">{notification.from.name}</td>
+                            <td className="px-2 py-3 text-wrap">{ notification.object === 'Suppression Utilisateur' ? "Admin" : notification.from.name}</td>
                             <td className="px-2 py-3 text-wrap text-right">
                                 <Checkbox
                                     id={inputName}

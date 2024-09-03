@@ -28,10 +28,20 @@ abstract class Controller
 
     public function delete_notif(Request $request){
         $data = $request->input();
-        dd($data);
         foreach ($data as $notif) {
             Notification::find($notif)->delete();
         }
         return back();
+    }
+
+    public function store_file($data){
+        if($data['file'])     
+
+            $data['file'] = $data['file']->store('message_files', 'public');
+            // dd($data['file']);
+
+        return $data['file'];
+        
+        
     }
 }

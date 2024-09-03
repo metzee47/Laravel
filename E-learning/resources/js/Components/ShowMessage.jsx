@@ -1,4 +1,5 @@
 import { MESSAGE_OBJECT, MESSAGE_STATUS, MESSAGE_STATUS_STYLE, ROLE } from "@/constant";
+import { Link } from "@inertiajs/react";
 
 export default function ShowMessage({message}){
 
@@ -21,7 +22,7 @@ export default function ShowMessage({message}){
             {/* <pre>{JSON.stringify(message, undefined, 2)}</pre> */}
 
             <h2 className="font-semibold text-xl shadow-inner shadow-black text-black dark:text-gray-200 leading-tight px-4 py-3 rounded-md w-fit">Message Info</h2>
-            <div className="bg-gray-900 p-5 rounded-md shadow-inner shadow-slate-500">
+            <div className="bg-gray-900 p-5 rounded-md ">
                 <div className="mb-2 flex gap-2 items-center">
                     <span className="text-slate-400">Object</span>
                     <h3 className="text-base text-green-200 italic ">{MESSAGE_OBJECT[message.object]}</h3>
@@ -38,9 +39,20 @@ export default function ShowMessage({message}){
                     <span className="text-slate-400">Status</span>
                     <h3 className={`text-base ${MESSAGE_STATUS_STYLE[message.status]}`}>{MESSAGE_STATUS[message.status]}</h3>
                 </div>
+                {
+                    message.file &&
+                    <div className="mb-2 flex gap-2 items-center">
+                        <span className="text-slate-400">Fichier(s)</span>
+                        <Link 
+                            href = {route('dashboardmessage.download-file', message)}
+                            className={`text-sm italic duration-200 hover:underline hover:text-green-200 font-bold`}>
+                            Télécharger
+                        </Link>
+                    </div>
+                }
                 <div className="mb-2 flex flex-col gap-4">
-                    <span className="text-slate-400">Contenu</span>
-                    <h3 className="text-lg bg-gray-800 text-slate-400 rounded-sm text-justify p-4 shadow-md shadow-gray-500 w-full">
+                    {/* <span className="text-slate-400">Contenu</span> */}
+                    <h3 className="text-sm bg-gray-950 text-slate-400 rounded-md text-justify p-4 shadow-sm shadow-green-200 w-full">
                         {displayContent()}
                     </h3>
                 </div>

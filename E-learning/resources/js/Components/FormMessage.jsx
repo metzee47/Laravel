@@ -5,6 +5,7 @@ import SelectInput from "./SelectInput";
 import { MESSAGE_OBJECT } from "@/constant";
 import TextareaInput from "./TextareaInput";
 import MessageReceiver from "./MessageReceiver";
+import TextInput from "./TextInput";
 // import { useEffect, useState } from "react";
 
 
@@ -18,6 +19,7 @@ export default function FormMessage({ msg = null, instructors, students, fillier
         content: '',
         destinataires: '',
         sent_by: '',
+        file: '',
         sent_to: [],
         _method: 'POST'
     })
@@ -165,6 +167,21 @@ export default function FormMessage({ msg = null, instructors, students, fillier
                 />
                 
             }
+
+            <div className="flex flex-col gap-2 mb-4">
+                <InputLabel htmlFor = 'file' value={'Fichier ou image'}/>
+                <TextInput
+                    id = 'file'
+                    type = 'file'
+                    name = 'file'
+                    className = 'text-white'
+                    placeholder = 'Televerser un fichier ou image'
+                    // value = {data.file}
+                    onChange= {e=> setData('file', e.target.files[0])} 
+                />
+                
+                <InputError message={errors.file}/>
+            </div>
 
 
             

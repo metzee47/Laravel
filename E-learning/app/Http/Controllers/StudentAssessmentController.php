@@ -143,7 +143,7 @@ class StudentAssessmentController extends Controller
             $object = 'Devoir Manqué' ;
             $content =  Auth::user()->name . ' a raté son devoir('. $assessment->title . ')';
     
-            $instructor = Course::findOrFail($data['course_id'])->professeur()->first();
+            $instructor = Course::findOrFail($assessmentNote['course_id'])->professeur()->first();
     
             $this->notification(Auth::id(), $instructor->id, $object, $content);
 

@@ -25,7 +25,8 @@ class MessageRequest extends FormRequest
             'object' => 'required|in:warning,information,alerte,a_venir,demande,rappel',
             'content' => 'required|string|min:10',
             'destinataires' => 'required|in:fillieres,etudiants,professeurs,admin,professeur',
-            'sent_to' => 'required|array'
+            'sent_to' => 'required|array',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:2048',
         ];
     }
 }

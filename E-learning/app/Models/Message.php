@@ -9,7 +9,7 @@ class Message extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['object', 'content', 'sent_to', 'sent_by'];
+    protected $fillable = ['object', 'content', 'sent_to', 'sent_by', 'file'];
 
     public function sender(){
         return $this->belongsTo(User::class, 'sent_by');

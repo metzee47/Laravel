@@ -53,7 +53,7 @@ class ProfileController extends Controller
     // dd($data);
     User::find($user->id)->update($data);
     
-    $object = 'Modification Utisateur' ;
+    $object = 'Modification Utilisateur' ;
     $content =  'A fait quelques modifications sur ses informations personnelles.';
     
     // $instructor = Course::findOrFail($data['course_id'])->professeur();
@@ -76,14 +76,13 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $object = 'Suppression Utisateur' ;
-        $content =  'A supprimé son compte.';
+        $object = 'Suppression Utilisateur' ;
+        $content =  Auth::user()->name . 'a supprimé son compte.';
 
         // $instructor = Course::findOrFail($data['course_id'])->professeur();
         $admin = User::query()->where('role', 'admin')->get();
         foreach ($admin as $user) {
-            $this->notification(Auth::id(),$user->id, $object, $content);
-            dd($user);
+            $this->notification(1,$user->id, $object, $content);
         }
 
         $user = $request->user();
