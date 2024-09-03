@@ -29,7 +29,7 @@ class FilliereRequest extends FormRequest
             // 'slug' => 'nullable',
             'courses' => 'required|exists:courses,id',
             'students' => 'nullable|exists:users,id',
-            'instructors' => 'nullable|exists:users,id',
+            // 'instructors' => 'nullable|exists:users,id',
             
         ];
     }

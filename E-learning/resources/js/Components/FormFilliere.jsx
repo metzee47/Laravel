@@ -105,14 +105,6 @@ export default function FormFilliere({
                     errors={errors.students}
                 />
 
-                <Related
-                    data={data.instructors}
-                    name='instructors'
-                    related_data={instructors}
-                    setData={setData}
-                    errors={errors.instructors}
-                />
-
 
                 {/* <div className="flex-1 flex flex-col gap-2 mb-4">
                     {

@@ -7,7 +7,7 @@ import { Head, Link, router } from "@inertiajs/react";
 
 export default function Show({auth, filliere, instructors, courses, students}){
     
-    instructors = instructors.data
+    instructors = instructors
     students = students.data
     courses = courses.data
     
@@ -31,7 +31,7 @@ export default function Show({auth, filliere, instructors, courses, students}){
             }
         >
             <Head title={filliere.name} />
-            {/* <pre>{JSON.stringify(fillieres, undefined, 2)}</pre> */}
+            {/* <pre>{JSON.stringify(instructors, undefined, 2)}</pre> */}
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">

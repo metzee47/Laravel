@@ -3,8 +3,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 
 export default function Edit({
-    auth, success, filliere, courses, instructors, students,
-    related_courses, related_students, related_instructors}){
+    auth, success, filliere, courses, students,
+    related_courses, related_students }){
 
 
     return (
@@ -36,10 +36,10 @@ export default function Edit({
                                 msg={success} 
                                 filliere={filliere.data} 
                                 courses= {courses.data} 
-                                instructors = {instructors.data}
+                                // instructors = {instructors.data}
                                 students = {students.data}
                                 related_courses={related_courses}
-                                related_instructors={related_instructors}
+                                // related_instructors={related_instructors}
                                 related_students={related_students}
                                 />
                         </div>

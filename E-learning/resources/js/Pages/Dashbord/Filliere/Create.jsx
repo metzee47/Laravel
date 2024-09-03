@@ -3,7 +3,7 @@ import Pagination from "@/Components/Pagination";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 
-export default function Create({auth, success, courses, students, instructors}){
+export default function Create({auth, success, courses, students}){
     
     return (
         <AuthenticatedLayout
@@ -24,7 +24,7 @@ export default function Create({auth, success, courses, students, instructors}){
                         <div className="p-6 text-gray-900 dark:text-gray-100 overflow-x-auto">
             {/* <pre>{JSON.stringify(students, undefined, 2)}</pre> */}
 
-                            <FormFilliere msg={success} courses={courses.data} students={students.data} instructors={instructors.data}/>
+                            <FormFilliere msg={success} courses={courses.data} students={students.data}/>
                         </div>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Course;
 use App\Models\Filliere;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class FilliereController extends Controller
@@ -51,7 +52,7 @@ class FilliereController extends Controller
 
         $courses = CourseResource::collection(Course::query()->orderBy('name')->get());
         $students = UserResource::collection(User::query()->where('role', 'etudiant')->orderBy('name')->get());
-        $instructors = UserResource::collection(User::query()->where('role', 'professeur')->orderBy('name')->get());
+        // $instructors = UserResource::collection(User::query()->where('role', 'professeur')->orderBy('name')->get());
         $success = session('success');
         $courses = CourseResource::collection(Course::query()->orderBy('name')->get());
         return inertia('Dashbord/Filliere/Create',
@@ -60,7 +61,7 @@ class FilliereController extends Controller
                         // 'filliere',
                         'courses',
                         'students',
-                        'instructors',
+                        // 'instructors',
                         // 'related_courses',
                         // 'related_users',
                     ));
@@ -75,9 +76,9 @@ class FilliereController extends Controller
         $data = $request->validated();
         $filliere = Filliere::create($data);
 
-        $data['users'] = array_merge($data['students'], $data['instructors']);
+        // $data['users'] = array_merge($data['students'], $data['instructors']);
         $filliere->courses()->sync($data['courses']);
-        $filliere->users()->sync($data['users']);
+        $filliere->users()->sync($data['students']);
 
         $msg = 'Nouvelle filliere ajoutée avec succes.';
         return back()->with('success', $msg);
@@ -89,11 +90,32 @@ class FilliereController extends Controller
      */
     public function show(Filliere $filliere)
     {
-        $instructors = UserResource::collection($filliere->users()->where('role', 'professeur')->orderBy('name')->get());
+        $courses = $filliere->courses()->get();
+        $instructors = new Collection([]);
+        $ids = [];
+
+        foreach ($courses as $course) {
+            # code...
+            $instructor = $course->professeur()->first();
+            // dd($instructor);
+            // dd($ids);
+            if (!(in_array($instructor->id, $ids))) {
+
+                $instructors->push($instructor);
+            }
+
+            array_push($ids, $instructor->id);
+
+            
+        }
+
+        unset($ids);
+        // dd($instructors);
+        // $instructors = UserResource::collection($filliere->users()->where('role', 'professeur')->orderBy('name')->get());
         $students = UserResource::collection($filliere->users()->where('role', 'etudiant')->orderBy('name')->get());
         $courses = CourseResource::collection($filliere->courses()->orderBy('name')->get());
 
-        return inertia('Dashbord/Filliere/Show', compact('filliere', 'instructors', 'courses', 'students'));
+        return inertia('Dashbord/Filliere/Show', compact('filliere', 'courses', 'students', 'instructors'));
     }
 
     /**
@@ -103,13 +125,13 @@ class FilliereController extends Controller
     {
         $courses = CourseResource::collection(Course::query()->orderBy('name')->get());
         $students = UserResource::collection(User::query()->where('role', 'etudiant')->orderBy('name')->get());
-        $instructors = UserResource::collection(User::query()->where('role', 'professeur')->orderBy('name')->get());
+        // $instructors = UserResource::collection(User::query()->where('role', 'professeur')->orderBy('name')->get());
         $success = session('success');
         $filliere = new FilliereResource($filliere);
         // // dd($filliere);
         $related_courses = $filliere->courses()->pluck('id');
         $related_students = $filliere->users()->where('role','etudiant')->pluck('id');
-        $related_instructors = $filliere->users()->where('role','professeur')->pluck('id');
+        // $related_instructors = $filliere->users()->where('role','professeur')->pluck('id');
         // dd($related_users);
         return inertia('Dashbord/Filliere/Edit', 
             compact(
@@ -117,10 +139,10 @@ class FilliereController extends Controller
                 'filliere',
                 'courses',
                 'students',
-                'instructors',
+                // 'instructors',
                 'related_courses',
                 'related_students',
-                'related_instructors',
+                // 'related_instructors',
             ));
         
     }
@@ -134,9 +156,9 @@ class FilliereController extends Controller
 
         $filliere->update($data);
 
-        $data['users'] = array_merge($data['students'], $data['instructors']);
+        // $data['users'] = array_merge($data['students'], $data['instructors']);
         $filliere->courses()->sync($data['courses']);
-        $filliere->users()->sync($data['users']);
+        $filliere->users()->sync($data['students']);
 
         $msg = 'Nouvelle modification effectuee sur ' . $filliere->name;
         return to_route('dashboardfilliere.index')->with('success', $msg);
